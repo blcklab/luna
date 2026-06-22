@@ -15,6 +15,12 @@ The library runs entirely client-side and has no external dependencies or API re
 
 It can be used alongside `@blcklab/helios` for combined solar and lunar simulation.
 
+<p align="left">
+  <img src="https://img.shields.io/npm/v/@blcklab/luna?style=flat-square" alt="npm version" />
+  <img src="https://img.shields.io/npm/dm/@blcklab/luna?style=flat-square" alt="downloads" />
+  <img src="https://github.com/blcklab/luna/actions/workflows/test.yml/badge.svg?style=flat-square" alt="tests" />
+  <img src="https://img.shields.io/github/license/blcklab/luna?style=flat-square" alt="license" />
+</p>
 
 ---
 
