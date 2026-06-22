@@ -1,4 +1,4 @@
-Here is a stripped-back, minimalist version. It drops the emoji-heavy headers, scales back the laboratory metaphors, and uses clean typography to let the code and the utility speak for themselves.
+
 
 ---
 
