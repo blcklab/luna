@@ -1,6 +1,6 @@
 {
   "name": "@blcklab/luna",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Astronomy engine for moon phases, moonrise, moonset, and lunar calculations",
   "type": "module",
   "main": "./dist/index.cjs",
