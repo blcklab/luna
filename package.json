@@ -1,0 +1,45 @@
+{
+  "name": "@blcklab/luna",
+  "version": "0.1.0",
+  "description": "Astronomy engine for moon phases, moonrise, moonset, and lunar calculations",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "astronomy",
+    "moon",
+    "moonrise",
+    "moonset",
+    "moon-phase",
+    "lunar",
+    "illumination",
+    "luna"
+  ],
+  "author": "Black Lab",
+  "license": "MIT",
+  "devDependencies": {
+    "fast-check": "^4.8.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}
