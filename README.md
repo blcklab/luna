@@ -6,7 +6,7 @@
 
 > **A JavaScript/TypeScript library for lunar calculations**
 
-> v0.1.0 — Initial public release. The API may evolve in future versions.
+> v0.1.1 — Initial public release. The API may evolve in future versions.
 
 `@blcklab/luna` provides moon position, direction vectors, phase, and illumination based on observer coordinates and time.
 
@@ -113,7 +113,7 @@ npm install @blcklab/luna
 
 ## Roadmap
 
-### v0.1
+### v0.1.1
 
 * Moon position
 * Direction vectors
