@@ -12,146 +12,80 @@ import {
   altitude,
   azimuth,
   moonCoords,
+  sunCoords,
 } from "./core.js";
 
 const RAD = Math.PI / 180;
 
-function getMoonPosition(
-  date: Date,
-  lat: number,
-  lng: number
-): MoonPosition {
-
+function getMoonPosition(date: Date, lat: number, lng: number): MoonPosition {
   const lw = -lng * RAD;
   const phi = lat * RAD;
 
-  const d =
-    toJulian(date) -
-    2451545;
+  const d = toJulian(date) - 2451545;
 
-  const moon =
-    moonCoords(d);
+  const moon = moonCoords(d);
 
-  const H =
-    siderealTime(
-      d,
-      lw
-    ) -
-    moon.ra;
+  const H = siderealTime(d, lw) - moon.ra;
 
-  const h =
-    altitude(
-      H,
-      phi,
-      moon.dec
-    );
+  const h = altitude(H, phi, moon.dec);
 
-  const a =
-    azimuth(
-      H,
-      phi,
-      moon.dec
-    );
+  const a = azimuth(H, phi, moon.dec);
 
   return {
-    altitude:
-      h / RAD,
+    altitude: h / RAD,
 
-    azimuth:
-      (a / RAD + 180) %
-      360,
+    azimuth: (a / RAD + 180) % 360,
   };
 }
 
-function getDirection(
-  altitudeDeg: number,
-  azimuthDeg: number
-): MoonDirection {
+function getDirection(altitudeDeg: number, azimuthDeg: number): MoonDirection {
+  const alt = altitudeDeg * RAD;
 
-  const alt =
-    altitudeDeg * RAD;
-
-  const az =
-    azimuthDeg * RAD;
+  const az = azimuthDeg * RAD;
 
   return {
-    x:
-      Math.cos(alt) *
-      Math.sin(az),
+    x: Math.cos(alt) * Math.sin(az),
 
-    y:
-      Math.sin(alt),
+    y: Math.sin(alt),
 
-    z:
-      Math.cos(alt) *
-      Math.cos(az),
+    z: Math.cos(alt) * Math.cos(az),
   };
 }
+function getMoonPhase(date: Date): MoonPhase {
+  const d = toJulian(date) - 2451545;
 
-function getMoonPhase(
-  date: Date
-): MoonPhase {
+  const moon = moonCoords(d);
 
-  const synodicMonth =
-    29.530588853;
+  const sun = sunCoords(d);
 
-  const knownNewMoon =
-    Date.UTC(
-      2000,
-      0,
-      6,
-      18,
-      14
-    );
+  const phaseAngle =
+    (((moon.lon - sun.lon) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
 
-  const days =
-    (
-      date.getTime() -
-      knownNewMoon
-    ) /
-    86400000;
+  const phase = phaseAngle / (2 * Math.PI);
 
-  const phase =
-    (
-      (
-        days %
-        synodicMonth
-      ) +
-      synodicMonth
-    ) %
-    synodicMonth /
-    synodicMonth;
+  const age = phase * 29.530588853;
 
-  const illumination =
-    (
-      1 -
-      Math.cos(
-        phase *
-        Math.PI * 2
-      )
-    ) / 2;
-
-  const age =
-    phase * 360;
+  const illumination = (1 - Math.cos(phaseAngle)) / 2;
 
   let name: MoonPhase["name"];
 
-  if (phase < 0.03)
+  if (phase < 0.03 || phase > 0.97) {
     name = "new";
-  else if (phase < 0.22)
+  } else if (phase < 0.22) {
     name = "waxing-crescent";
-  else if (phase < 0.28)
+  } else if (phase < 0.28) {
     name = "first-quarter";
-  else if (phase < 0.47)
+  } else if (phase < 0.47) {
     name = "waxing-gibbous";
-  else if (phase < 0.53)
+  } else if (phase < 0.53) {
     name = "full";
-  else if (phase < 0.72)
+  } else if (phase < 0.72) {
     name = "waning-gibbous";
-  else if (phase < 0.78)
+  } else if (phase < 0.78) {
     name = "last-quarter";
-  else
+  } else {
     name = "waning-crescent";
+  }
 
   return {
     age,
@@ -160,49 +94,27 @@ function getMoonPhase(
   };
 }
 
-export function getMoon(
-  options: GetMoonOptions
-): MoonTimes {
+export function getMoon(options: GetMoonOptions): MoonTimes {
+  const date = options.date ?? new Date();
 
-  const date =
-    options.date ??
-    new Date();
+  const position = getMoonPosition(date, options.lat, options.lng);
 
-  const position =
-    getMoonPosition(
-      date,
-      options.lat,
-      options.lng
-    );
+  const direction = getDirection(position.altitude, position.azimuth);
 
-  const direction =
-    getDirection(
-      position.altitude,
-      position.azimuth
-    );
-
-  const phase =
-    getMoonPhase(date);
+  const phase = getMoonPhase(date);
 
   return {
     position,
     direction,
     phase,
 
-    isVisible:
-      position.altitude > 0,
+    isVisible: position.altitude > 0,
   };
 }
 
-export function luna(
-  lat: number,
-  lng: number
-) {
+export function luna(lat: number, lng: number) {
   return {
-
-    getMoon(
-      date?: Date
-    ) {
+    getMoon(date?: Date) {
       return getMoon({
         lat,
         lng,
@@ -217,9 +129,7 @@ export function luna(
       });
     },
 
-    at(
-      date?: Date
-    ) {
+    at(date?: Date) {
       return getMoon({
         lat,
         lng,
@@ -227,14 +137,8 @@ export function luna(
       });
     },
 
-    position(
-      date = new Date()
-    ) {
-      return getMoonPosition(
-        date,
-        lat,
-        lng
-      );
+    position(date = new Date()) {
+      return getMoonPosition(date, lat, lng);
     },
   };
 }
